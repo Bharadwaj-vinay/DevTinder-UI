@@ -4,10 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addUser } from './utils/userSlice';
 import { BASE_URL } from './utils/constants';
+import { onKeyDownLogin } from './utils/helperFunctions';
 
 const Login = () => {
     const [emailId, setEmailId] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate(); 
 
@@ -25,6 +27,7 @@ const Login = () => {
             dispatch(addUser(res.data));
             navigate("/");
         } catch (error) {
+            setError(error?.response?.data);
             console.error("Login failed", error);
         }
     };
@@ -32,7 +35,7 @@ const Login = () => {
   return (
     <div className='flex justify-center my-20'>
         <div className="card bg-base-200 w-96 shadow-sm">
-            <div className="card-body">
+            <div className="card-body" onKeyDown={(e) => onKeyDownLogin(e)}>
                 <h2 className="card-title justify-center">Login</h2>
                     <div>
                         <fieldset className="fieldset">
@@ -54,12 +57,14 @@ const Login = () => {
                             />
                         </fieldset>
                     </div>
+                <p className='text-red-500'>{error}</p>
                 <div className="card-actions justify-center">
-                    <button 
+                    <button id="login-btn"
                         className="btn btn-primary"
                         onClick={handleLogin}
-                        >
-                        Login</button>
+                        onKeyDown={(e) => onKeyDownLogin(e)}>
+                            Login
+                    </button>
                 </div>
             </div>
         </div>
