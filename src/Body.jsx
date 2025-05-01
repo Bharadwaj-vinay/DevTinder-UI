@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, {useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NavBar from './NavBar'
 import Footer from './Footer'
 import { BASE_URL } from './utils/constants';
@@ -10,6 +10,9 @@ import { addUser } from './utils/userSlice';
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const userData = useSelector((store) => store.user);
+  // Check if user data is already available in the store  
   const fetchUser = async () => {
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
@@ -31,7 +34,10 @@ const Body = () => {
   // so that the user can stay logged in upon page refresh
 
   useEffect(() => {
-    fetchUser();
+    if(!userData) {
+      fetchUser();
+      // Fetch user data only if it's not already in the store
+    }
   }, []);
 
   return (
