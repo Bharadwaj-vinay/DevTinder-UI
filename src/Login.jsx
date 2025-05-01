@@ -1,14 +1,17 @@
 import axios from 'axios';
 import {useState} from 'react'
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addUser } from './utils/userSlice';
 
 const Login = () => {
     const [emailId, setEmailId] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
+    const navigate = useNavigate(); 
 
     const handleLogin = async () => {
+    
         try {
             const res = await axios.post(
                 "http://localhost:7777/login", 
@@ -19,6 +22,7 @@ const Login = () => {
                 { withCredentials: true} // This is important to include cookies in the request
             );
             dispatch(addUser(res.data));
+            navigate("/");
         } catch (error) {
             console.error("Login failed", error);
         }
