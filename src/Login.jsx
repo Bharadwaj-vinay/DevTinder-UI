@@ -1,9 +1,12 @@
 import axios from 'axios';
 import {useState} from 'react'
+import { useDispatch } from 'react-redux';
+import { addUser } from './utils/userSlice';
 
 const Login = () => {
     const [emailId, setEmailId] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
 
     const handleLogin = async () => {
         try {
@@ -14,7 +17,8 @@ const Login = () => {
                     password,
                 },
                 { withCredentials: true} // This is important to include cookies in the request
-        );
+            );
+            dispatch(addUser(res.data));
         } catch (error) {
             console.error("Login failed", error);
         }
