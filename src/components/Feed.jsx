@@ -28,11 +28,11 @@ const Feed = () => {
     }, []);
 
 
-  return (feedData && 
+  return (!feedData?.data?.length ? <h1 className='flex justify-center my-10  '>No users Found!</h1> :  
     <div className='flex justify-center my-10'>
         <UserCard user={feedData.data[0]}/>
     </div>
   )
 }
 
-export default Feed
+export default Feed;
