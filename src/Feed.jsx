@@ -1,6 +1,7 @@
 import {useEffect} from 'react'
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import UserCard from './UserCard';
 import {addFeed} from './utils/feedSlice';
 import { BASE_URL } from './utils/constants';
 
@@ -27,8 +28,10 @@ const Feed = () => {
     }, []);
 
 
-  return (
-    <div>Feed</div>
+  return (feedData && 
+    <div className='flex justify-center my-10'>
+        <UserCard user={feedData.data[0]}/>
+    </div>
   )
 }
 
