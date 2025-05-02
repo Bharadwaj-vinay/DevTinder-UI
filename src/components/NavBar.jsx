@@ -30,7 +30,7 @@ const NavBar = () => {
             </div>
             {user && <div className="flex gap-2">
                 <div className="dropdown dropdown-end mx-5 flex">
-                    <p className='px-4'>Welcome, {user.firstName}</p>
+                    <p className='px-4 py-2'>Welcome, {user.firstName}</p>
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
                         <img
@@ -47,7 +47,8 @@ const NavBar = () => {
                             <span className="badge">New</span>
                         </Link>
                         </li>
-                        <li><Link>Settings</Link></li>
+                        <li><Link to="/connections">Connections</Link></li>
+                        <li><Link to="/requests">Requests</Link></li>
                         <li><Link onClick={handleLogout}>Logout</Link></li>
                     </ul>
                 </div>
