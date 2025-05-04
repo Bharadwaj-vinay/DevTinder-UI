@@ -111,6 +111,8 @@ sudo systemctl enable nginx
 
  sudo scp -r dist/* /usr/share/nginx/html
 
+ or sudo scp -r dist/* /var/www/html
+
  Enable port:80 of your instance
 
 
