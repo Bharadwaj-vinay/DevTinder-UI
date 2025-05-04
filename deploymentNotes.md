@@ -88,27 +88,126 @@
 
  chmod 400 ‹secret>.pem
 
-ssh -i "devTinder-secret.pem" ubuntu@ec2-43-204-96-49.ap-south-1. compute. amazonaws.
+ssh -i "devTinder_fullstack.pem" ubuntu@ec2-13-50-112-178.eu-north-1.compute.amazonaws.com
 
 install Node version 16.17.0
 
 Git clone our project using https url
 
-npn install → dependencies install
+npm install → dependencies install
 
-npn run build - creates dist etc
+npm run build - creates dist etc
 
 sudo apt update or sudo yum update for redhat
 
 sudo yum install nginx - for redhat
 
 
-sudo systenctl start nginx
+sudo systemctl start nginx
 
-sudo systenctl enable nginx
+sudo systemctl enable nginx
 
  Copy code from dist(build files) to /var/www/html/ or /usr/share/nginx/html for redhat
 
  sudo scp -r dist/* /usr/share/nginx/html
 
  Enable port:80 of your instance
+
+
+ Backend:
+
+Enable port:7777 of your instance 
+
+ PM2 is a daemon process manager that will help you manage and keep your application online 24/7
+
+ since you cant keep terminal open with nap start running all the tme, we use PM2
+
+ install it on your remote instance
+
+ npm install pm2 -g
+
+ after installation for starting your app use "pm2 start npm -- start"
+
+ pm2 start npm -- scriptToRun -> generic
+
+    eg: pm2 start devTinder_BACKEND -- start
+
+ pm2 list - get list of processes running
+
+ pm2 stop npm - stop the process 
+    pm2 stop "name_of_process" - generic
+
+    eg: pm2 stop devTinder_BACKEND
+
+pm2 delete npm - delete the process
+    pm2 delete "name_of_process" - generic
+
+ to check the logs: use "pm2 logs"
+
+ to clear the logs: use "pm2 flush npm" 
+        "pm2 flush name_of_app" - generic
+
+to give a custom name to a process instead of default you use:
+
+    pm2 start npm --name "custom_Name" -- start
+
+
+
+Integrating FE & BE:
+
+    BackEnd: http://13.50.112.178:7777/
+
+    FrontEnd: http://13.50.112.178/
+
+    Domain Name = devTinder.com 
+
+    DNS Mapping of devTinder.com to 13.50.112.178,
+    then
+        FrontEnd: devTinder.com
+
+        BackEnd: devTinder.com/7777 can be mapped to devTinder.com/api
+
+        Port can be mapped to /api or anthing using nginx proxy_pass
+
+        Proxy_pass configuration  done by:
+
+            sudo nano /etc/nginx/sites-available/default
+
+            To configure Nginx to mask port 7777 as /api, you need to update the Nginx configuration file. Here's how you can do it:
+
+Steps to Configure Nginx:
+Open the Nginx Configuration File:
+sudo nano /etc/nginx/sites-available/default
+
+Update the Configuration: Add a location block to proxy requests from /api to your backend running on port 7777.
+
+server {
+    listen 80;
+    server_name devTinder.com; // or the ip address instead of devTinder.com
+
+    location / {
+        root /usr/share/nginx/html; # Path to your frontend build files
+        index index.html;
+        try_files $uri /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:7777/; # Backend running on port 7777
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+Test the Nginx Configuration: Run the following command to ensure there are no syntax errors:
+
+sudo nginx -t
+
+Restart Nginx:
+ Apply the changes by restarting Nginx:
+    sudo systemctl restart nginx
+
+Update Security Group (if necessary): 
+Ensure port 80 is open in your AWS EC2 instance's security group to allow HTTP traffic
