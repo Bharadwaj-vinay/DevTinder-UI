@@ -213,3 +213,7 @@ Restart Nginx:
 
 Update Security Group (if necessary): 
 Ensure port 80 is open in your AWS EC2 instance's security group to allow HTTP traffic
+
+.env file are not pushed to git, but we need it when deployed so we create it on the running instance
+
+    sudo nano .env & copy all the content from your code base and save it
