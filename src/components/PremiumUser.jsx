@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BASE_URL } from '../utils/constants';
 
 
 const PremiumUser = () => {
+    const [isUserPremium, setIsUserPremium] = useState(false);
+    useEffect(() => {
+        verifyPremiumUser();
+    }, []);
+    
+    const verifyPremiumUser = async () => {
+        const res = await axios.get(BASE_URL + "/premium/verify", {
+            withCredentials: true,
+        });
+
+        if (res.data.isPremium) {
+            setIsUserPremium(true);
+        }
+    }
+
     const handlePurchase = async type => {
         const order = await axios.post(
             BASE_URL + "/payment/create",
@@ -27,8 +43,12 @@ const PremiumUser = () => {
             },
             theme: {
                 color: "#FE7254"
-            }
+            },
+            handler: verifyPremiumUser
         };
+
+        //**VImp** the handler function is called on the close of payment dialog
+        //  if the payment is successful/
 
         //open payment dialog box
         const rzp = new window.Razorpay(options);//we get access to it throgh script tag in index.html
@@ -37,7 +57,7 @@ const PremiumUser = () => {
 
     }
 
-    return (
+    return (!isUserPremium ?
         <div className='m-10'>
             <div className="flex w-full">
                 <div className="card bg-base-300 rounded-box grid h-80 grow place-items-center">
@@ -62,7 +82,7 @@ const PremiumUser = () => {
                     <button onClick={() => handlePurchase("gold")} className='btn btn-primary'>Buy Gold</button>
                 </div>
             </div>
-        </div>
+        </div> : "You are already a premium user"
     )
 }
 
